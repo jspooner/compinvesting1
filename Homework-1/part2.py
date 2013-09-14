@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 '''
 Part 2
 http://wiki.quantsoftware.org/index.php?title=CompInvestI_Homework_1
@@ -12,21 +13,37 @@ import QSTK.qstkutil.DataAccess as da
 import datetime as dt
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
-def simulate(dt_start, dt_end, equities, allocations):
+def simulate(dt_start, dt_end, ls_symbols, allocations):
     '''Simulate Function'''
-    vol       = 0
-    daily_ret = 0
-    sharpe    = 0
-    cum_ret   = 0
-    # We need closing prices so the timestamp should be hours=16.
-    dt_timeofday = dt.timedelta(hours=16)
-
-    # Get a list of trading days between the start and the end.
-    ldt_timestamps = du.getNYSEdays(dt_start, dt_end, dt_timeofday)
+    vol            = 0
+    daily_ret      = 0
+    sharpe         = 0
+    cum_ret        = 0    
+    dt_timeofday   = dt.timedelta(hours=16) # We need closing prices so the timestamp should be hours=16.
+    ldt_timestamps = du.getNYSEdays(dt_start, dt_end, dt_timeofday) # Get a list of trading days between the start and the end.
+    c_dataobj      = da.DataAccess('Yahoo') # Creating an object of the dataaccess class with Yahoo as the source.
+    ls_keys        = ['open', 'high', 'low', 'close', 'volume', 'actual_close'] # Keys to be read from the data, it is good to read everything in one go.
+    # Reading the data, now d_data is a dictionary with the keys above.
+    # Timestamps and symbols are the ones that were specified before.
+    ldf_data = c_dataobj.get_data(ldt_timestamps, ls_symbols, ls_keys)
+    d_data   = dict(zip(ls_keys, ldf_data))
+    # Filling the data for NAN
+    for s_key in ls_keys:
+        d_data[s_key] = d_data[s_key].fillna(method='ffill')
+        d_data[s_key] = d_data[s_key].fillna(method='bfill')
+        d_data[s_key] = d_data[s_key].fillna(1.0)
+    # Getting the numpy ndarray of close prices.
+    df_rets = d_data['close'].copy() 
+    df_rets = df_rets.fillna(method='ffill') 
+    df_rets = df_rets.fillna(method='bfill') 
+    df_rets = df_rets.fillna(1.0)
+    na_rets = df_rets.values
+    print("original stock values") 
+    print(df_rets['GOOG'])
     
-    print ldt_timestamps
-    
+    # print np.std([[0,0], [1,1]])
     
     return vol, daily_ret, sharpe, cum_ret
 
