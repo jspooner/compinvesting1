@@ -14,6 +14,7 @@ import datetime as dt
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import combinator as utils
 
 def simulate(dt_start, dt_end, ls_symbols, allocations):
     '''Simulate Function'''
@@ -27,21 +28,21 @@ def simulate(dt_start, dt_end, ls_symbols, allocations):
     d_data   = dict(zip(ls_keys, ldf_data))
     # Getting the numpy ndarray of close prices.
     na_price = d_data['close'].values
-    print na_price
-    print "# Normalizing the prices to start at 1 and see relative returns"
+    # print na_price
+    # print "# Normalizing the prices to start at 1 and see relative returns"
     na_normalized_price = na_price / na_price[0, :]
-    print na_normalized_price
-    print "# Multiply each column by the allocation to the corresponding equity."
+    # print na_normalized_price
+    # print "# Multiply each column by the allocation to the corresponding equity."
     na_normalized = na_normalized_price.copy()
     na_price_alloc = na_normalized * allocations
-    print na_price_alloc
-    print "# Sum each row for each day. That's your cumulative daily portfolio value."
+    # print na_price_alloc
+    # print "# Sum each row for each day. That's your cumulative daily portfolio value."
     na_portfolio = np.sum(na_price_alloc, axis=1)
     na_port = na_portfolio.copy()
-    print na_port
-    print "# Copy the normalized prices to a new ndarry to find returns."
+    # print na_port
+    # print "# Copy the normalized prices to a new ndarry to find returns."
     na_ret = tsu.returnize0(na_port)
-    print "# Statistics from the total portfolio value."
+    # print "# Statistics from the total portfolio value."
     daily_return = np.average(na_ret)
     vol          = np.std(na_ret)
     sharpe_ratio = ((252)**(.5))*(daily_return/vol)
@@ -56,9 +57,8 @@ def main():
     dt_end      = dt.datetime(2011, 12, 31)
     symbols     = ['AAPL', 'GLD', 'GOOG', 'XOM']
     allocations = [0.4, 0.4, 0.0, 0.2]
-
     vol, daily_ret, sharpe, cum_ret = simulate(dt_start, dt_end, symbols, allocations)
-    print "================="
+    print "================= Control test"
     print "Start Date:" , dt_start #January 1, 2011
     print "End Date:" , dt_end #December 31, 2011
     print "Symbols: ", symbols
@@ -68,9 +68,26 @@ def main():
     print "Average Daily Return: ",  daily_ret
     print "Cumulative Return:" ,  cum_ret
     
+    print "================= Part 3: Use your function to create a portfolio optimizer!"
+    print "================= Question 1"
+    highest_sharpe_ratio = 0
+    for allocation in utils.calcPossibleAllocations(4):
+        vol, daily_ret, sharpe, cum_ret = simulate(dt.datetime(2010, 1, 1), dt.datetime(2010, 12, 31), ['BRCM', 'ADBE', 'AMD', 'ADI'], allocation)
+        if sharpe > highest_sharpe_ratio:
+            highest_sharpe_ratio = sharpe
     
+    print "highest_sharpe_ratio ", highest_sharpe_ratio
     
+    print "================= Part 3: Use your function to create a portfolio optimizer!"
+    print "================= Question 2"    
+    highest_sharpe_ratio = 0
+    ideal_allocation = []
+    for allocation in utils.calcPossibleAllocations(4):
+        vol, daily_ret, sharpe, cum_ret = simulate(dt.datetime(2011, 1, 1), dt.datetime(2011, 12, 31), ['AAPL', 'GOOG', 'IBM', 'MSFT'], allocation)
+        if sharpe > highest_sharpe_ratio:
+            ideal_allocation = allocation
+            highest_sharpe_ratio = sharpe
+    print "highest_sharpe_ratio ", highest_sharpe_ratio, " with an allocation of ", ideal_allocation
     
-
 if __name__ == '__main__':
     main()
