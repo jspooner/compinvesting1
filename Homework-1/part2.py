@@ -47,17 +47,30 @@ def simulate(dt_start, dt_end, ls_symbols, allocations):
     sharpe_ratio = ((252)**(.5))*(daily_return/vol)
     cum_ret      = na_portfolio[len(na_portfolio)-1]
     
-    return vol, daily_ret, sharpe, cum_ret
+    return vol, daily_return, sharpe_ratio, cum_ret
 
 def main():
     ''' Main Function'''
 
-    dt_start = dt.datetime(2006, 1, 1)
-    dt_end   = dt.datetime(2010, 12, 31)
-    print "start ", dt_start, " end ", dt_end
-    vol, daily_ret, sharpe, cum_ret = simulate(dt_start, dt_end, ['GOOG','AAPL','GLD','XOM'], [0.2,0.3,0.4,0.1])
+    dt_start    = dt.datetime(2011, 1, 1)
+    dt_end      = dt.datetime(2011, 12, 31)
+    symbols     = ['GOOG','AAPL','GLD','XOM']
+    allocations = [0.2,0.3,0.4,0.1]
 
-    print "result ", vol, daily_ret, sharpe, cum_ret
+    vol, daily_ret, sharpe, cum_ret = simulate(dt_start, dt_end, symbols, allocations)
+    print "================="
+    print "Start Date:" , dt_start #January 1, 2011
+    print "End Date:" , dt_end #December 31, 2011
+    print "Symbols: ", symbols
+    print "Optimal Allocations:" , allocations #[0.4, 0.4, 0.0, 0.2]
+    print "Sharpe Ratio:" , sharpe
+    print "Volatility (stdev of daily returns): ", vol
+    print "Average Daily Return: ",  daily_ret
+    print "Cumulative Return:" ,  cum_ret
+    
+    
+    
+    
 
 if __name__ == '__main__':
     main()
