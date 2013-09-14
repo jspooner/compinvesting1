@@ -54,8 +54,8 @@ def main():
 
     dt_start    = dt.datetime(2011, 1, 1)
     dt_end      = dt.datetime(2011, 12, 31)
-    symbols     = ['GOOG','AAPL','GLD','XOM']
-    allocations = [0.2,0.3,0.4,0.1]
+    symbols     = ['AAPL', 'GLD', 'GOOG', 'XOM']
+    allocations = [0.4, 0.4, 0.0, 0.2]
 
     vol, daily_ret, sharpe, cum_ret = simulate(dt_start, dt_end, symbols, allocations)
     print "================="
