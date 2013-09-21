@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 '''
 (c) 2011, 2012 Georgia Tech Research Corporation
 This source code is released under the New BSD license.  Please see
@@ -56,13 +57,13 @@ def find_events(ls_symbols, d_data):
     for s_sym in ls_symbols:
         for i in range(1, len(ldt_timestamps)):
             # Calculating the returns for this timestamp
-            f_symprice_today = df_close[s_sym].ix[ldt_timestamps[i]]
-            f_symprice_yest = df_close[s_sym].ix[ldt_timestamps[i - 1]]
-            f_marketprice_today = ts_market.ix[ldt_timestamps[i]]
-            f_marketprice_yest = ts_market.ix[ldt_timestamps[i - 1]]
-            f_symreturn_today = (f_symprice_today / f_symprice_yest) - 1
+            f_symprice_today     = df_close[s_sym].ix[ldt_timestamps[i]]
+            f_symprice_yest      = df_close[s_sym].ix[ldt_timestamps[i - 1]]
+            f_marketprice_today  = ts_market.ix[ldt_timestamps[i]]
+            f_marketprice_yest   = ts_market.ix[ldt_timestamps[i - 1]]
+            f_symreturn_today    = (f_symprice_today / f_symprice_yest) - 1
             f_marketreturn_today = (f_marketprice_today / f_marketprice_yest) - 1
-
+            
             # Event is found if the symbol is down more then 3% while the
             # market is up more then 2%
             if f_symreturn_today <= -0.03 and f_marketreturn_today >= 0.02:
@@ -72,6 +73,7 @@ def find_events(ls_symbols, d_data):
 
 
 if __name__ == '__main__':
+    print "start"
     dt_start = dt.datetime(2008, 1, 1)
     dt_end = dt.datetime(2009, 12, 31)
     ldt_timestamps = du.getNYSEdays(dt_start, dt_end, dt.timedelta(hours=16))
@@ -90,6 +92,7 @@ if __name__ == '__main__':
         d_data[s_key] = d_data[s_key].fillna(1.0)
 
     df_events = find_events(ls_symbols, d_data)
+    print df_events
     print "Creating Study"
     ep.eventprofiler(df_events, d_data, i_lookback=20, i_lookforward=20,
                 s_filename='MyEventStudy.pdf', b_market_neutral=True, b_errorbars=True,
