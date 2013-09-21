@@ -48,7 +48,7 @@ def find_events(ls_symbols, d_data):
             f_symprice_today = df_actual_close[s_sym].ix[ldt_timestamps[i]]
             f_symprice_yest  = df_actual_close[s_sym].ix[ldt_timestamps[i - 1]]
 
-            if f_symprice_yest >= 5.0 and f_symprice_today < 5.0:
+            if f_symprice_yest >= 10.0 and f_symprice_today < 10.0:
                 print "Found event for ", s_sym, " on ", ldt_timestamps[i], " yesterday ", f_symprice_yest, " f_symprice_today ", f_symprice_today
                 df_events[s_sym].ix[ldt_timestamps[i]] = 1
     
@@ -71,7 +71,7 @@ def do_test_for(dt_start, dt_end, symbol_list):
         d_data[s_key] = d_data[s_key].fillna(1.0)
     
     df_events = find_events(ls_symbols, d_data)
-    study_name = 'EventStudy-' + symbol_list + 'pdf'
+    study_name = 'EventStudy-10dollarevent-' + symbol_list + 'pdf'
     print "Creating Study", study_name
     ep.eventprofiler(df_events, d_data, i_lookback=20, i_lookforward=20,
                 s_filename=study_name, b_market_neutral=True, b_errorbars=True,
@@ -83,4 +83,4 @@ if __name__ == '__main__':
     dt_start       = dt.datetime(2008, 1, 1)
     dt_end         = dt.datetime(2009, 12, 31)
     do_test_for(dt_start, dt_end, 'sp5002008')
-    do_test_for(dt_start, dt_end, 'sp5002012')
+    # do_test_for(dt_start, dt_end, 'sp5002012')
