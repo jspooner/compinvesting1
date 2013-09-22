@@ -22,20 +22,34 @@ Year, Month, Day, total value of portfolio
 '''
 
 import sys
+# QSTK Imports
+import QSTK.qstkutil.qsdateutil as du
+import QSTK.qstkutil.tsutil as tsu
+import QSTK.qstkutil.DataAccess as da
+
+# Third Party Imports
+import datetime as dt
+import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 
 
 
+
 if __name__ == '__main__':
-    print "start marketsim", 
+    print "start marketsim"
     # cash       = sys.argv[1]
     # orders_csv = sys.argv[2]
     # values_csv = sys.argv[3]
     cash       = 1000000
     orders_csv = '/Users/jspooner/QSTK/Examples/CompInvesti_Homework_3/orders.csv'
     values_csv = "values.csv"
-    
-    orders = np.loadtxt(orders_csv, dtype='S5,f4', delimiter=',', comments="#", skiprows=0)
+
+    # orders = np.loadtxt(orders_csv, dtype='S5,f4', delimiter=',', comments="#", skiprows=0)
+    # print orders[0]
+    orders = pd.read_csv(orders_csv, parse_dates={'date' : [0,1,2]}, skiprows=0, header=None )
     print orders
+    
+    
 
     
