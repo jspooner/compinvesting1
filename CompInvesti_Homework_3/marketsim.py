@@ -34,7 +34,9 @@ import pandas as pd
 import numpy as np
 
 
-
+def get_adjusted_close_for(symbol):
+    """docstring for get_adjusted_close_for"""
+    pass
 
 if __name__ == '__main__':
     print "start marketsim"
@@ -44,11 +46,19 @@ if __name__ == '__main__':
     cash       = 1000000
     orders_csv = '/Users/jspooner/QSTK/Examples/CompInvesti_Homework_3/orders.csv'
     values_csv = "values.csv"
-
-    # orders = np.loadtxt(orders_csv, dtype='S5,f4', delimiter=',', comments="#", skiprows=0)
-    # print orders[0]
+    
     orders = pd.read_csv(orders_csv, parse_dates={'date' : [0,1,2]}, skiprows=0, header=None )
-    print orders
+    print orders['date']
+    
+    dt_timeofday   = dt.timedelta(hours=16) # We need closing prices so the timestamp should be hours=16.
+    ldt_timestamps = du.getNYSEdays(orders['date'][0], orders['date'][len(orders['date'])-1], dt_timeofday)
+    c_dataobj      = da.DataAccess('Yahoo') # Creating an object of the dataaccess class with Yahoo as the source.
+    ls_keys        = ['open', 'high', 'low', 'close', 'volume', 'actual_close'] # Keys to be read from the data, it is good to read everything in one go.
+    # Reading the data, now d_data is a dictionary with the keys above.
+    # Timestamps and symbols are the ones that were specified before.
+    ldf_data = c_dataobj.get_data(ldt_timestamps, orders[3].drop_duplicates().values, ls_keys)
+    d_data   = dict(zip(ls_keys, ldf_data))
+    
     
     
 
