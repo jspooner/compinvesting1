@@ -23,6 +23,10 @@ Year, Month, Day, total value of portfolio
 
 import sys
 
+
+
 if __name__ == '__main__':
     print "start marketsim"
     print 'Argument List:', str(sys.argv)
+    print sys.argv[1]
+    
