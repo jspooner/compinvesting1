@@ -22,11 +22,20 @@ Year, Month, Day, total value of portfolio
 '''
 
 import sys
+import numpy as np
 
 
 
 if __name__ == '__main__':
-    print "start marketsim"
-    print 'Argument List:', str(sys.argv)
-    print sys.argv[1]
+    print "start marketsim", 
+    # cash       = sys.argv[1]
+    # orders_csv = sys.argv[2]
+    # values_csv = sys.argv[3]
+    cash       = 1000000
+    orders_csv = '/Users/jspooner/QSTK/Examples/CompInvesti_Homework_3/orders.csv'
+    values_csv = "values.csv"
+    
+    orders = np.loadtxt(orders_csv, dtype='S5,f4', delimiter=',', comments="#", skiprows=0)
+    print orders
+
     
