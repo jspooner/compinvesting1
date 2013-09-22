@@ -44,22 +44,25 @@ if __name__ == '__main__':
     # orders_csv = sys.argv[2]
     # values_csv = sys.argv[3]
     cash       = 1000000
-    orders_csv = '/Users/jspooner/QSTK/Examples/CompInvesti_Homework_3/orders.csv'
     values_csv = "values.csv"
+    orders_csv       = '/Users/jspooner/QSTK/Examples/CompInvesti_Homework_3/orders.csv'
+    orders           = pd.read_csv(orders_csv, parse_dates={'date' : [0,1,2]}, skiprows=0, header=None ).sort(['date'])
+    dt_timeofday     = dt.timedelta(hours=16)
+    ldt_timestamps   = du.getNYSEdays(orders['date'].min(), orders['date'].max(), dt_timeofday)
+    c_dataobj        = da.DataAccess('Yahoo')
+    ldf_data         = c_dataobj.get_data(ldt_timestamps, orders[3].drop_duplicates().values, 'actual_close')
     
-    orders = pd.read_csv(orders_csv, parse_dates={'date' : [0,1,2]}, skiprows=0, header=None )
-    print orders['date']
-    
-    dt_timeofday   = dt.timedelta(hours=16) # We need closing prices so the timestamp should be hours=16.
-    ldt_timestamps = du.getNYSEdays(orders['date'][0], orders['date'][len(orders['date'])-1], dt_timeofday)
-    c_dataobj      = da.DataAccess('Yahoo') # Creating an object of the dataaccess class with Yahoo as the source.
-    ls_keys        = ['open', 'high', 'low', 'close', 'volume', 'actual_close'] # Keys to be read from the data, it is good to read everything in one go.
-    # Reading the data, now d_data is a dictionary with the keys above.
-    # Timestamps and symbols are the ones that were specified before.
-    ldf_data = c_dataobj.get_data(ldt_timestamps, orders[3].drop_duplicates().values, ls_keys)
-    d_data   = dict(zip(ls_keys, ldf_data))
-    
-    
+    for order in orders[:].values:
+        actual_close = ldf_data[order[1]][order[0].strftime('%Y-%m-%d 16:%M:%S')]
+        print order[2], order[3], "shares of", order[1], "on", order[0], "actual_close", actual_close
+        if order[2] == "Buy":
+            cash -= actual_close
+        else:
+            cash += actual_close
+        print "  cash", cash
     
 
-    
+
+
+
+
